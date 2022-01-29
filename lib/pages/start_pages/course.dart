@@ -1,44 +1,83 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:mgimo_dictionary/widgets/item.dart';
-import 'package:mgimo_dictionary/widgets/title.dart' as title;
+import 'package:get/get.dart';
+import 'package:mgimo_dictionary/controllers/auth_controller.dart';
 
 class Course extends StatelessWidget {
-  const Course({Key? key}) : super(key: key);
-  static const List<String> list = [
-    '1 Курс',
-    '2 Курс',
-    '3 Курс',
-    '4 Курс',
-  ];
+  Course(this.name, {Key? key}) : super(key: key);
+  final _controller = Get.find<AuthController>();
+  final String name;
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: Hive.box('main').listenable(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const title.Title('Выберите курс'),
-          const SizedBox(
-            height: 25,
+    final _courses = _controller.getCourse(name);
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Выберите курс'),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GetBuilder<AuthController>(
+          builder: (_) {
+            return _.status == UserStatus.Authenticating
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _courses.length,
+                    itemBuilder: (context, index) => Item(
+                      _courses[index],
+                    ),
+                  );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class Item extends StatelessWidget {
+  Item(this.item, {Key? key}) : super(key: key);
+  final Map<String, dynamic> item;
+  final _controller = Get.find<AuthController>();
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 12, right: 12, top: 20),
+      child: InkWell(
+        splashFactory: NoSplash.splashFactory,
+        highlightColor: Colors.transparent,
+        onTap: () => _controller.authUser(item['course_number']),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: const BorderRadius.all(Radius.circular(50)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey[500]!,
+                offset: const Offset(4.0, 4.0),
+                blurRadius: 15.0,
+                spreadRadius: 1.0,
+              ),
+              const BoxShadow(
+                color: Colors.white,
+                offset: Offset(-4.0, -4.0),
+                blurRadius: 15.0,
+                spreadRadius: 1.0,
+              ),
+            ],
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: list.length,
-              itemBuilder: (context, index) => Item(list[index], 'language'),
+          child: Text(
+            item['name'],
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 20,
+              color: Colors.black,
             ),
           ),
-        ],
+        ),
       ),
-      builder: (_, Box box, Widget? child) {
-        return Scaffold(
-          backgroundColor:
-              (box.get('isDark', defaultValue: false) as bool) == true
-                  ? const Color.fromRGBO(30, 30, 30, 1)
-                  : Colors.grey[300],
-          body: child,
-        );
-      },
     );
   }
 }

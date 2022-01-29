@@ -2,18 +2,21 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:mgimo_dictionary/helpers/bindings.dart';
+import 'package:mgimo_dictionary/controllers/auth_controller.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'controllers/main_page_controller.dart';
 import 'helpers/scroll_glow.dart';
 import 'pages/main_page.dart';
-import 'pages/start_pages/facultet.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await openHiveBox('main');
+  Get.put<AuthController>(AuthController());
+  Get.put<MainScreenController>(MainScreenController());
   runApp(const MyApp());
 }
 
@@ -53,7 +56,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'MGIMO Dictionary',
+      title: 'Словарь МГИМО',
       home: const MyHomePage(),
       debugShowCheckedModeBanner: false,
       builder: (context, child) {
@@ -62,19 +65,71 @@ class MyApp extends StatelessWidget {
           child: child!,
         );
       },
-      initialBinding: AuthBinding(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final _controller = Get.find<AuthController>();
+  @override
+  void initState() {
+    super.initState();
+
+    checkSession();
+  }
+
+  void checkSession() async {
+    // await _controller.logout();
+    var box = Hive.box('main');
+    if (box.get('user', defaultValue: {}).isEmpty) {
+      if (Platform.isAndroid) {
+        await _controller.googleSignIn();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Hive.box('main').get('token', defaultValue: null) != null
-          ? const Body()
-          : const StartingPages(),
+      body: Hive.box('main').get('user', defaultValue: {}).isEmpty
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const FlutterLogo(
+                    size: 100,
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  const Text('Пройдите регистрацию'),
+                  GetBuilder<AuthController>(
+                    builder: (_) {
+                      return TextButton(
+                        onPressed: _controller.googleSignIn,
+                        child: _.status == UserStatus.Authenticating
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Text('Попробовать снова'),
+                      );
+                    },
+                  )
+                ],
+              ),
+            )
+          : const MainPage(),
     );
   }
 }
