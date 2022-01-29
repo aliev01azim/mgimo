@@ -12,8 +12,8 @@ final dio = Dio(
     baseUrl: Config.baseUrl,
     contentType: Headers.jsonContentType,
     headers: {
-      'Authorization':
-          'Bearer ${Hive.box('main').get('token', defaultValue: {}).isNotEmpty ? Hive.box('main').get('token', defaultValue: {})['access'] : Hive.box('main').get('tokens', defaultValue: {})['access_token']}'
+      'X-CSRFToken':
+          '${Hive.box('main').get('token', defaultValue: {}).isNotEmpty ? Hive.box('main').get('token', defaultValue: {})['access'] : Hive.box('main').get('tokens', defaultValue: {})['access_token']}'
     },
   ),
 );
