@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.mgimo_dictionary">
-   <application
+    package="com.trafika.mgimo_dictionary">
+    <uses-permission android:name="com.android.vending.BILLING" />
+    <application
         android:label="mgimo_dictionary"
         android:icon="@mipmap/ic_launcher">
         <activity

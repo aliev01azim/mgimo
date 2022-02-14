@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+import 'package:mgimo_dictionary/pages/subscription.dart';
 import '../controllers/main_page_controller.dart';
 import 'result.dart';
 
@@ -117,6 +118,12 @@ class _MainPageState extends State<MainPage> {
             },
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Get.to(
+          () => const Subscription(),
+        ),
+        child: const Icon(Icons.monetization_on),
       ),
     );
   }

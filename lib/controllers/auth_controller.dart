@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:developer';
+
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -27,7 +29,6 @@ class AuthController extends GetxController {
   String get email => _email;
   List get facultets => _facutets;
 
-  int course = 0;
   Future<void> authUser(int course) async {
     _status = UserStatus.Authenticating;
     update();
@@ -63,7 +64,7 @@ class AuthController extends GetxController {
 
   Future<void> logout() async {
     GoogleSignIn _googleSignIn = GoogleSignIn();
-    await _googleSignIn.disconnect();
+    // await _googleSignIn.disconnect();
     await _googleSignIn.signOut();
     await Hive.box('main').delete('user');
     await Hive.box('main').delete('userChoices');
@@ -77,8 +78,11 @@ class AuthController extends GetxController {
     try {
       final result = await _googleSignIn.signIn();
       if (result != null) {
+        print(
+            'objecttretettttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt : $result');
         _email = result.email;
         final Map _user = {
+          'id': result.id,
           'displayName': result.displayName,
           'email': result.email,
           'photoUrl': result.photoUrl,
@@ -92,6 +96,7 @@ class AuthController extends GetxController {
         errorAlert(errorMessage);
       }
     } catch (error) {
+      log(error.toString());
       errorAlert(error);
     } finally {
       _status = UserStatus.IsAuthenticated;

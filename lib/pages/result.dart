@@ -27,16 +27,16 @@ class Result extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              // const Text('Транскрипция'),
-              // const SizedBox(
-              //   height: 20,
-              // ),
-              // Center(
-              //   child: Text(
-              //     res['transcription'],
-              //     style: const TextStyle(fontSize: 35, color: Colors.indigo),
-              //   ),
-              // ),
+              const Text('Транскрипция'),
+              Center(
+                child: Text(
+                  res['transcription'],
+                  style: const TextStyle(fontSize: 35, color: Colors.indigo),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               const Text('Перевод'),
               const SizedBox(
                 height: 10,

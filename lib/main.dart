@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mgimo_dictionary/controllers/auth_controller.dart';
+import 'package:mgimo_dictionary/helpers/purchases_api.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'controllers/main_page_controller.dart';
@@ -15,6 +15,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await openHiveBox('main');
+  await PurchasesApi.init();
   Get.put<AuthController>(AuthController());
   Get.put<MainScreenController>(MainScreenController());
   runApp(const MyApp());
@@ -81,7 +82,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-
     checkSession();
   }
 

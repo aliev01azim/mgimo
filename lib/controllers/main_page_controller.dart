@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,7 +29,6 @@ class MainScreenController extends GetxController {
       try {
         dio.Response response = await getSearchApi(query);
         final result = response.data;
-        print(result);
         if (result == null) return;
         final List loadedData = [];
         for (var word in result['results']) {

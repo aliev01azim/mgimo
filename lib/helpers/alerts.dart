@@ -38,10 +38,10 @@ void errorAlert(message) {
 }
 
 void successAlert(String message) {
-  return Get.snackbar(
+  Get.snackbar(
     '',
     '',
-    titleText: SizedBox(),
+    titleText: const SizedBox(),
     messageText: Row(
       children: [
         const Icon(
@@ -65,7 +65,7 @@ void warningAlert(String message) {
   Get.snackbar(
     '',
     '',
-    titleText: SizedBox(),
+    titleText: const SizedBox(),
     messageText: Row(
       children: [
         const Icon(

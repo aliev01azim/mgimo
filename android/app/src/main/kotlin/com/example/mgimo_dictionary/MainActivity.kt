@@ -1,4 +1,4 @@
-package com.example.mgimo_dictionary
+package com.trafika.mgimo_dictionary
 
 import io.flutter.embedding.android.FlutterActivity
 
